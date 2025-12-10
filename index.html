@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>Curriculum Vitae - Curca Eduard</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
@@ -16,13 +16,41 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: hidden;
+            height: 100%;
+        }
+
         body {
             font-family: "Poppins", sans-serif;
             background-color: #f8f9fa;
             color: #333;
             line-height: 1.6;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+        }
+
+        .scroll-wrapper {
+            height: 100%;
+            width: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .content-wrapper {
+            min-height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
             padding: 20px;
-            position: relative;
+        }
+
+        .page-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            transform-origin: top center;
         }
 
         .download-btn {
@@ -59,15 +87,47 @@
         }
 
         .container {
-            max-width: 210mm;
-            height: 297mm;
+            width: 210mm;
+            min-height: 297mm;
             background: white;
-            margin: 0 auto;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
             display: flex;
             position: relative;
             overflow: hidden;
             border-radius: 8px;
+        }
+
+        /* Mobile: mantieni dimensioni fisse e scala proporzionalmente */
+        @media screen and (max-width: 900px) {
+            body {
+                background-color: #f5f5f5;
+            }
+
+            .content-wrapper {
+                padding: 0;
+                min-height: auto;
+            }
+
+            .page-wrapper {
+                transform: scale(var(--scale-factor));
+                transform-origin: top center;
+                width: 210mm;
+                min-height: 297mm;
+            }
+
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+                width: 210mm;
+                min-height: 297mm;
+            }
+
+            .download-btn {
+                padding: 10px 18px;
+                font-size: 12px;
+                bottom: 10px;
+                right: 10px;
+            }
         }
 
         .sidebar {
@@ -79,6 +139,7 @@
             flex-direction: column;
             animation: slideInLeft 0.8s ease-out;
             overflow: hidden;
+            flex-shrink: 0;
         }
 
         /* ANIMAZIONE AURORA LENTA */
@@ -122,6 +183,10 @@
             transition: none !important;
         }
 
+        body.pdf-mode .page-wrapper {
+            transform: none !important;
+        }
+
         body.pdf-mode .sidebar::before,
         body.pdf-mode .sidebar::after {
             display: none !important;
@@ -159,6 +224,13 @@
 
         body.pdf-mode .photo::before {
             display: none !important;
+        }
+
+        /* PDF Mode - Rimuovi sottolineatura dai link */
+        body.pdf-mode .company-link,
+        body.pdf-mode .institute-link,
+        body.pdf-mode .location-link {
+            text-decoration: none !important;
         }
 
         @keyframes auroraEpic {
@@ -420,6 +492,7 @@
             padding: 35px 30px;
             overflow-y: auto;
             animation: slideInRight 0.8s ease-out;
+            flex-shrink: 0;
         }
 
         @keyframes slideInRight {
@@ -605,13 +678,25 @@
 
             body {
                 background: white;
+                overflow: visible;
+            }
+
+            .scroll-wrapper {
+                overflow: visible;
+            }
+
+            .content-wrapper {
                 padding: 0;
+            }
+
+            .page-wrapper {
+                transform: none !important;
             }
 
             .container {
                 box-shadow: none;
                 margin: 0;
-                max-width: 100%;
+                width: 100%;
                 height: auto;
                 border-radius: 0;
             }
@@ -651,12 +736,13 @@
 
             .location-link {
                 color: #1e40af !important;
+                text-decoration: none !important;
             }
 
             .company-link,
             .institute-link {
                 color: #0066cc !important;
-                text-decoration: underline !important;
+                text-decoration: none !important;
             }
 
             .date-badge {
@@ -667,170 +753,216 @@
         }
 
         .sidebar::-webkit-scrollbar,
-        .main-content::-webkit-scrollbar {
+        .main-content::-webkit-scrollbar,
+        .scroll-wrapper::-webkit-scrollbar {
             width: 6px;
         }
 
         .sidebar::-webkit-scrollbar-track,
-        .main-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
+        .main-content::-webkit-scrollbar-track,
+        .scroll-wrapper::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
         }
 
         .sidebar::-webkit-scrollbar-thumb,
-        .main-content::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
+        .main-content::-webkit-scrollbar-thumb,
+        .scroll-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 3px;
         }
     </style>
 </head>
 
 <body>
-    <button class="download-btn" onclick="downloadPDF()">📄 Scarica PDF</button>
+    <div class="scroll-wrapper">
+        <div class="content-wrapper">
+            <button class="download-btn" onclick="downloadPDF()">📄 Scarica PDF</button>
 
-    <div class="container">
-        <!-- SIDEBAR -->
-        <div class="sidebar">
-            <div class="photo-box">
-                <img src="https://i.ibb.co/kVDH17vr/Immagine-Whats-App-2025-12-08-ore-17-05-42-510d5342.jpg"
-                    alt="Curca Eduard" class="photo">
-            </div>
-            <div class="name">Curca Eduard</div>
+            <div class="page-wrapper">
+                <div class="container">
+                    <!-- SIDEBAR -->
+                    <div class="sidebar">
+                        <div class="photo-box">
+                            <img src="https://i.ibb.co/kVDH17vr/Immagine-Whats-App-2025-12-08-ore-17-05-42-510d5342.jpg"
+                                alt="Curca Eduard" class="photo">
+                        </div>
+                        <div class="name">Curca Eduard</div>
 
-            <!-- INFORMAZIONI PERSONALI -->
-            <div class="section info-personali">
-                <div class="section-title">Informazioni Personali</div>
-                <div class="contact-item">
-                    <span class="contact-label">Cell.</span>
-                    <span class="contact-value">351 380 2645</span>
-                </div>
-                <div class="contact-item">
-                    <span class="contact-label">Mail</span>
-                    <span class="contact-value">edycurca03@gmail.com</span>
-                </div>
-                <div class="contact-item">
-                    <span class="contact-label">Indirizzo</span>
-                    <span class="contact-value">Via G. Minzoni, 27 - Fusignano (RA)</span>
-                </div>
-                <div class="contact-item">
-                    <span class="contact-label">Nato il</span>
-                    <span class="contact-value">7 aprile 1998</span>
-                </div>
-            </div>
+                        <!-- INFORMAZIONI PERSONALI -->
+                        <div class="section info-personali">
+                            <div class="section-title">Informazioni Personali</div>
+                            <div class="contact-item">
+                                <span class="contact-label">Cell.</span>
+                                <span class="contact-value">351 380 2645</span>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-label">Mail</span>
+                                <span class="contact-value">edycurca03@gmail.com</span>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-label">Indirizzo</span>
+                                <span class="contact-value">Via G. Minzoni, 27 - Fusignano (RA)</span>
+                            </div>
+                            <div class="contact-item">
+                                <span class="contact-label">Nato il</span>
+                                <span class="contact-value">7 aprile 1998</span>
+                            </div>
+                        </div>
 
-            <!-- COMPETENZE -->
-            <div class="section competenze">
-                <div class="section-title">Competenze</div>
-                <div class="contact-item">Conoscenza saldatura subacquea</div>
-                <div class="contact-item">Saldatura TIG</div>
-                <div class="contact-item">Saldatura filo continuo, animato</div>
-                <div class="contact-item">Saldatura elettrodo</div>
-                <div class="contact-item">Taglio al plasma</div>
-                <div class="contact-item">Taglio con fiamma ossiacetilenica</div>
-                <div class="contact-item">Conoscenza disegno tecnico navale</div>
-                <div class="contact-item">Comprensione disegno tecnico</div>
-                <div class="contact-item">Uso macchinari e attrezzature settore</div>
-                <div class="contact-item">Manualità e senso pratico</div>
-                <div class="contact-item">Tecniche di rimozione di cordoni</div>
-            </div>
+                        <!-- COMPETENZE -->
+                        <div class="section competenze">
+                            <div class="section-title">Competenze</div>
+                            <div class="contact-item">Conoscenza saldatura subacquea</div>
+                            <div class="contact-item">Saldatura TIG</div>
+                            <div class="contact-item">Saldatura filo continuo, animato</div>
+                            <div class="contact-item">Saldatura elettrodo</div>
+                            <div class="contact-item">Taglio al plasma</div>
+                            <div class="contact-item">Taglio con fiamma ossiacetilenica</div>
+                            <div class="contact-item">Conoscenza disegno tecnico navale</div>
+                            <div class="contact-item">Comprensione disegno tecnico</div>
+                            <div class="contact-item">Uso macchinari e attrezzature settore</div>
+                            <div class="contact-item">Manualità e senso pratico</div>
+                            <div class="contact-item">Tecniche di rimozione di cordoni</div>
+                        </div>
 
-            <!-- LINGUE -->
-            <div class="section lingue">
-                <div class="section-title">Lingue</div>
-                <div class="language-item">
-                    <span class="language-name">Romeno</span>
-                    <span class="language-level">Madrelingua</span>
-                </div>
-                <div class="language-item">
-                    <span class="language-name">Italiano</span>
-                    <span class="language-level">Avanzato</span>
-                </div>
-                <div class="language-item">
-                    <span class="language-name">Tedesco</span>
-                    <span class="language-level">Avanzato</span>
-                </div>
-                <div class="language-item">
-                    <span class="language-name">Inglese</span>
-                    <span class="language-level">Base</span>
-                </div>
-            </div>
-        </div>
+                        <!-- LINGUE -->
+                        <div class="section lingue">
+                            <div class="section-title">Lingue</div>
+                            <div class="language-item">
+                                <span class="language-name">Romeno</span>
+                                <span class="language-level">Madrelingua</span>
+                            </div>
+                            <div class="language-item">
+                                <span class="language-name">Italiano</span>
+                                <span class="language-level">Avanzato</span>
+                            </div>
+                            <div class="language-item">
+                                <span class="language-name">Tedesco</span>
+                                <span class="language-level">Avanzato</span>
+                            </div>
+                            <div class="language-item">
+                                <span class="language-name">Inglese</span>
+                                <span class="language-level">Base</span>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- MAIN CONTENT -->
-        <div class="main-content">
-            <h2>Profilo Professionale</h2>
-            <p class="profile-text">
-                Saldatore specializzato con oltre 7 anni di esperienza internazionale in cantieri navali e impianti gas.
-                Competenze complete in saldatura TIG, filo continuo, elettrodo, subacquea e taglio
-                plasma/ossiacetilenico.
-                Precisione, manualità e conoscenza approfondita di disegno tecnico navale.
-            </p>
+                    <!-- MAIN CONTENT -->
+                    <div class="main-content">
+                        <h2>Profilo Professionale</h2>
+                        <p class="profile-text">
+                            Saldatore specializzato con oltre 7 anni di esperienza internazionale in cantieri navali e
+                            impianti gas.
+                            Competenze complete in saldatura TIG, filo continuo, elettrodo, subacquea e taglio
+                            plasma/ossiacetilenico.
+                            Precisione, manualità e conoscenza approfondita di disegno tecnico navale.
+                        </p>
 
-            <h2>Esperienza Lavorativa</h2>
+                        <h2>Esperienza Lavorativa</h2>
 
-            <div class="experience-item">
-                <div class="date-badge">2017</div>
-                <div class="experience-meta">
-                    <a href="https://www.google.com/maps/search/?api=1&query=Porto+Esbjerg%2C+Danimarca" target="_blank"
-                        class="location-link">Porto Esbjerg, Danimarca</a>
+                        <div class="experience-item">
+                            <div class="date-badge">2017</div>
+                            <div class="experience-meta">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Porto+Esbjerg%2C+Danimarca"
+                                    target="_blank" class="location-link">Porto Esbjerg, Danimarca</a>
+                            </div>
+                            <div class="experience-description">Controlli saldature, manutenzione navi mercantili.</div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="date-badge">2017-2023</div>
+                            <div class="experience-meta">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Rostock%2C+Germania"
+                                    target="_blank" class="location-link">Rostock, Germania</a>
+                                - <a href="https://www.neptun-werft.de/" target="_blank" class="company-link">Neptun
+                                    Werft</a>
+                            </div>
+                            <div class="experience-description">Saldatore, puntatura paratie metalliche, fissaggio
+                                tubazioni,
+                                preparazione e fissaggio macchinari.</div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="date-badge">2023</div>
+                            <div class="experience-meta">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Porto+Sundsvall%2C+Svezia"
+                                    target="_blank" class="location-link">Porto Sundsvall, Porto Harnosand, Svezia</a>
+                            </div>
+                            <div class="experience-description">Saldatura, fissaggio ganci, catene per carico navi
+                                mercantili
+                                adibite a trasporto pale eoliche.</div>
+                        </div>
+
+                        <div class="experience-item">
+                            <div class="date-badge">2023-2024</div>
+                            <div class="experience-meta">
+                                <a href="https://www.google.com/maps/search/?api=1&query=Verona%2C+Italia"
+                                    target="_blank" class="location-link">Verona, Italia</a>
+                                - <a href="https://www.enogas.it/" target="_blank" class="company-link">Enogas</a>
+                            </div>
+                            <div class="experience-description">
+                                Saldatore TIG su impianti gas inerti. Costruzione impianti antincendio, montaggio e
+                                manutenzione
+                                impianti gas. Montaggio valvole di sicurezza.
+                            </div>
+                        </div>
+
+                        <h2>Formazione</h2>
+
+                        <div class="education-block">
+                            <div class="education-title">
+                                <a href="https://www.meyerwerft.de/" target="_blank" class="institute-link">Corso
+                                    Saldatore - Meyer
+                                    Werft</a>
+                            </div>
+                            <div class="education-details">Subacqueo, elettrodo, filo continuo, TIG e SUB</div>
+                        </div>
+
+                        <div class="education-block">
+                            <div class="education-title">
+                                <a href="https://www.istitutobenelli.it/" target="_blank"
+                                    class="institute-link">Istituto Tecnico G.
+                                    Benelli</a>
+                            </div>
+                            <div class="education-details">Indirizzo meccanico veicoli a motore</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="experience-description">Controlli saldature, manutenzione navi mercantili.</div>
-            </div>
-
-            <div class="experience-item">
-                <div class="date-badge">2017-2023</div>
-                <div class="experience-meta">
-                    <a href="https://www.google.com/maps/search/?api=1&query=Rostock%2C+Germania" target="_blank"
-                        class="location-link">Rostock, Germania</a>
-                    - <a href="https://www.neptun-werft.de/" target="_blank" class="company-link">Neptun Werft</a>
-                </div>
-                <div class="experience-description">Saldatore, puntatura paratie metalliche, fissaggio tubazioni,
-                    preparazione e fissaggio macchinari.</div>
-            </div>
-
-            <div class="experience-item">
-                <div class="date-badge">2023</div>
-                <div class="experience-meta">
-                    <a href="https://www.google.com/maps/search/?api=1&query=Porto+Sundsvall%2C+Svezia" target="_blank"
-                        class="location-link">Porto Sundsvall, Porto Harnosand, Svezia</a>
-                </div>
-                <div class="experience-description">Saldatura, fissaggio ganci, catene per carico navi mercantili
-                    adibite a trasporto pale eoliche.</div>
-            </div>
-
-            <div class="experience-item">
-                <div class="date-badge">2023-2024</div>
-                <div class="experience-meta">
-                    <a href="https://www.google.com/maps/search/?api=1&query=Verona%2C+Italia" target="_blank"
-                        class="location-link">Verona, Italia</a>
-                    - <a href="https://www.enogas.it/" target="_blank" class="company-link">Enogas</a>
-                </div>
-                <div class="experience-description">
-                    Saldatore TIG su impianti gas inerti. Costruzione impianti antincendio, montaggio e manutenzione
-                    impianti gas. Montaggio valvole di sicurezza.
-                </div>
-            </div>
-
-            <h2>Formazione</h2>
-
-            <div class="education-block">
-                <div class="education-title">
-                    <a href="https://www.meyerwerft.de/" target="_blank" class="institute-link">Corso Saldatore - Meyer
-                        Werft</a>
-                </div>
-                <div class="education-details">Subacqueo, elettrodo, filo continuo, TIG e SUB</div>
-            </div>
-
-            <div class="education-block">
-                <div class="education-title">
-                    <a href="https://www.istitutobenelli.it/" target="_blank" class="institute-link">Istituto Tecnico G.
-                        Benelli</a>
-                </div>
-                <div class="education-details">Indirizzo meccanico veicoli a motore</div>
             </div>
         </div>
     </div>
 
     <script>
+        // Calcola e applica il fattore di scala su mobile e ajusta wrapper height
+        function adjustScale() {
+            const contentWrapper = document.querySelector('.content-wrapper');
+
+            if (window.innerWidth <= 900) {
+                const containerWidth = 793.7; // 210mm in pixel
+                const containerHeight = 1122.5; // 297mm in pixel
+                const viewportWidth = window.innerWidth;
+                const scaleFactor = viewportWidth / containerWidth;
+
+                document.documentElement.style.setProperty('--scale-factor', scaleFactor);
+
+                // Calcola l'altezza esatta del contenuto scalato
+                const scaledHeight = containerHeight * scaleFactor;
+
+                // Imposta l'altezza minima del wrapper per evitare spazi vuoti
+                contentWrapper.style.minHeight = scaledHeight + 'px';
+                contentWrapper.style.height = 'auto';
+            } else {
+                document.documentElement.style.setProperty('--scale-factor', '1');
+                contentWrapper.style.minHeight = '100%';
+                contentWrapper.style.height = '';
+            }
+        }
+
+        // Applica scala al caricamento e al resize
+        adjustScale();
+        window.addEventListener('resize', adjustScale);
+        window.addEventListener('orientationchange', adjustScale);
+
         document.addEventListener("keydown", (e) => {
             if ((e.ctrlKey || e.metaKey) && e.key === "p") {
                 e.preventDefault();
