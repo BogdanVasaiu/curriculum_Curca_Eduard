@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Curriculum Vitae - Curca Eduard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            position: relative;
+        }
+
+        .download-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.3);
+            transition: all 0.3s ease;
+            font-family: "Poppins", sans-serif;
+            z-index: 1000;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(30, 64, 175, 0.4);
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+        }
+
+        .download-btn:active {
+            transform: translateY(0);
+        }
+
+        .download-btn.loading {
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        .container {
+            max-width: 210mm;
+            height: 297mm;
+            background: white;
+            margin: 0 auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: flex;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .sidebar {
+            width: 40%;
+            position: relative;
+            color: white;
+            padding: 45px 35px;
+            display: flex;
+            flex-direction: column;
+            animation: slideInLeft 0.8s ease-out;
+            overflow: hidden;
+        }
+
+        /* ANIMAZIONE AURORA LENTA */
+        .sidebar {
+            background: #1e3a8a;
+        }
+
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(45deg, transparent 30%, rgba(37, 99, 235, 0.3) 50%, rgba(59, 130, 246, 0.4) 70%, transparent 100%),
+                linear-gradient(-45deg, transparent 30%, rgba(96, 165, 250, 0.2) 50%, rgba(147, 197, 253, 0.3) 70%, transparent 100%),
+                radial-gradient(ellipse at top left, rgba(59, 130, 246, 0.6) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(96, 165, 250, 0.5) 0%, transparent 50%),
+                linear-gradient(135deg, #1e3a8a 0%, #1e40af 30%, #2563eb 70%, #3b82f6 100%);
+            background-size: 400% 400%, 400% 400%, 200% 200%, 200% 200%, 100% 100%;
+            animation: auroraEpic 60s ease-in-out infinite;
+            z-index: 0;
+        }
+
+        .sidebar::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.08) 50%, transparent 100%);
+            background-size: 500% 100%;
+            animation: shimmerOverlay 8s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .sidebar>* {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* PDF Mode - Fix completo per rendering */
+        body.pdf-mode * {
+            animation: none !important;
+            transition: none !important;
+        }
+
+        body.pdf-mode .sidebar::before,
+        body.pdf-mode .sidebar::after {
+            display: none !important;
+        }
+
+        body.pdf-mode .sidebar {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+        }
+
+        body.pdf-mode .name {
+            color: white !important;
+            background: none !important;
+            -webkit-text-fill-color: white !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            text-shadow: none !important;
+        }
+
+        body.pdf-mode h2 {
+            color: #1e40af !important;
+            background: none !important;
+            -webkit-text-fill-color: #1e40af !important;
+            -webkit-background-clip: unset !important;
+            background-clip: unset !important;
+            border-bottom: 2px solid #2563eb !important;
+        }
+
+        body.pdf-mode h2::after {
+            display: none !important;
+        }
+
+        body.pdf-mode .section-title::after {
+            background: rgba(255, 255, 255, 0.4) !important;
+        }
+
+        body.pdf-mode .photo::before {
+            display: none !important;
+        }
+
+        @keyframes auroraEpic {
+
+            0%,
+            100% {
+                background-position: 0% 50%, 0% 50%, 0% 0%, 100% 100%, 0% 50%;
+            }
+
+            25% {
+                background-position: 100% 0%, 100% 100%, 50% 50%, 50% 50%, 100% 50%;
+            }
+
+            50% {
+                background-position: 0% 100%, 0% 0%, 100% 0%, 0% 100%, 50% 50%;
+            }
+
+            75% {
+                background-position: 100% 50%, 100% 50%, 0% 100%, 100% 0%, 0% 50%;
+            }
+        }
+
+        @keyframes shimmerOverlay {
+            0% {
+                transform: translateX(-100%) skewX(-15deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateX(100%) skewX(-15deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .photo-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 12px;
+            border: 4px solid rgba(255, 255, 255, 0.6);
+            object-fit: cover;
+            margin: 0 auto;
+            display: block;
+            animation: fadeInScale 1s ease-out;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .photo::before {
+            content: "";
+            position: absolute;
+            inset: -8px;
+            border-radius: 20px;
+            background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.4) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(96, 165, 250, 0.3) 0%, transparent 50%);
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        .photo:hover {
+            transform: scale(1.03);
+            box-shadow: 0 25px 50px rgba(37, 99, 235, 0.5);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .name {
+            font-size: 28px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 35px;
+            animation: fadeInDown 0.9s ease-out 0.2s both;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.98));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            position: relative;
+            animation: fadeInLeft 0.8s ease-out 0.6s both;
+            color: white !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        .section-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(96, 165, 250, 0.9), rgba(255, 255, 255, 0.95));
+            background-size: 300% 100%;
+            animation: underlineFlow 20s linear infinite;
+            border-radius: 2px;
+        }
+
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #60a5fa, #2563eb, transparent);
+            background-size: 300% 100%;
+            animation: underlineFlow 15s linear infinite;
+            border-radius: 2px;
+        }
+
+        @keyframes underlineFlow {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            100% {
+                background-position: 300% 50%;
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .section {
+            margin-bottom: 22px;
+        }
+
+        .info-personali .contact-item {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+            font-size: 11.5px;
+            line-height: 1.3;
+        }
+
+        .info-personali .contact-label {
+            font-weight: 700;
+            font-size: 11px;
+            color: #ffffff;
+            margin-bottom: 2px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .info-personali .contact-value {
+            font-size: 12px;
+            font-weight: 400;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .lingue .language-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .lingue .language-name {
+            font-weight: 600;
+        }
+
+        .lingue .language-level {
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.98);
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        .competenze .contact-item {
+            font-size: 11px;
+            line-height: 1.4;
+            margin-bottom: 7px;
+        }
+
+        .contact-item,
+        .language-item {
+            animation: fadeInRight 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(25px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .main-content {
+            width: 60%;
+            padding: 35px 30px;
+            overflow-y: auto;
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1e40af;
+            margin: 0 0 18px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid transparent;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            background: linear-gradient(90deg, #1e40af, #2563eb, #60a5fa);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .profile-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 25px;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(30, 64, 175, 0.1);
+            color: #1e40af;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(30, 64, 175, 0.2);
+            margin-bottom: 6px;
+        }
+
+        .experience-item {
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item:hover {
+            background: rgba(30, 64, 175, 0.06);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 0 -16px 20px;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 64, 175, 0.12);
+            border-bottom: none;
+        }
+
+        .experience-item:last-child {
+            border-bottom: none;
+        }
+
+        .experience-item:last-child:hover {
+            margin-bottom: 0;
+        }
+
+        .experience-meta {
+            font-size: 12px;
+            color: #666;
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .experience-meta .location-link {
+            font-weight: 700;
+            color: #1e40af;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .experience-meta .location-link:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        /* LINK AZIENDE PIÙ EVIDENTI */
+        .experience-meta .company-link {
+            color: #0066cc;
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-thickness: 1.5px;
+            text-underline-offset: 2px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .experience-meta .company-link:hover {
+            color: #004999;
+            text-decoration-thickness: 2px;
+            transform: translateY(-1px);
+        }
+
+        .experience-description {
+            font-size: 12px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .education-block {
+            margin-bottom: 18px;
+            padding: 14px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .education-block:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 64, 175, 0.15);
+            border-color: #1e40af;
+        }
+
+        .education-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        /* LINK ISTITUTI PIÙ EVIDENTI */
+        .education-title .institute-link {
+            color: #0066cc;
+            font-weight: 700;
+            text-decoration: underline;
+            text-decoration-thickness: 1.5px;
+            text-underline-offset: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .education-title .institute-link:hover {
+            color: #004999;
+            text-decoration-thickness: 2px;
+            transform: translateY(-1px);
+        }
+
+        .education-details {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        .education-details .location-link {
+            font-weight: 700;
+            color: #1e40af;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .education-details .location-link:hover {
+            color: #2563eb;
+            text-decoration: underline;
+        }
+
+        @media print {
+            .download-btn {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                margin: 0;
+                max-width: 100%;
+                height: auto;
+                border-radius: 0;
+            }
+
+            *::before,
+            *::after {
+                animation: none !important;
+            }
+
+            .sidebar {
+                background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+            }
+
+            .section-title {
+                color: white !important;
+            }
+
+            .name {
+                color: white !important;
+            }
+
+            h2 {
+                color: #1e40af !important;
+                border-bottom: 2px solid #2563eb !important;
+            }
+
+            .education-block,
+            .experience-item {
+                box-shadow: none;
+                transform: none;
+                transition: none;
+            }
+
+            a[href]:after {
+                content: " (" attr(href) ") ";
+            }
+
+            .location-link {
+                color: #1e40af !important;
+            }
+
+            .company-link,
+            .institute-link {
+                color: #0066cc !important;
+                text-decoration: underline !important;
+            }
+
+            .date-badge {
+                background: rgba(30, 64, 175, 0.2) !important;
+                border-color: rgba(30, 64, 175, 0.3) !important;
+                box-shadow: none;
+            }
+        }
+
+        .sidebar::-webkit-scrollbar,
+        .main-content::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track,
+        .main-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .sidebar::-webkit-scrollbar-thumb,
+        .main-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="download-btn" onclick="downloadPDF()">📄 Scarica PDF</button>
+
+    <div class="container">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="photo-box">
+                <img src="https://i.ibb.co/kVDH17vr/Immagine-Whats-App-2025-12-08-ore-17-05-42-510d5342.jpg"
+                    alt="Curca Eduard" class="photo">
+            </div>
+            <div class="name">Curca Eduard</div>
+
+            <!-- INFORMAZIONI PERSONALI -->
+            <div class="section info-personali">
+                <div class="section-title">Informazioni Personali</div>
+                <div class="contact-item">
+                    <span class="contact-label">Cell.</span>
+                    <span class="contact-value">351 380 2645</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Mail</span>
+                    <span class="contact-value">edycurca03@gmail.com</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Indirizzo</span>
+                    <span class="contact-value">Via G. Minzoni, 27 - Fusignano (RA)</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-label">Nato il</span>
+                    <span class="contact-value">7 aprile 1998</span>
+                </div>
+            </div>
+
+            <!-- COMPETENZE -->
+            <div class="section competenze">
+                <div class="section-title">Competenze</div>
+                <div class="contact-item">Conoscenza saldatura subacquea</div>
+                <div class="contact-item">Saldatura TIG</div>
+                <div class="contact-item">Saldatura filo continuo, animato</div>
+                <div class="contact-item">Saldatura elettrodo</div>
+                <div class="contact-item">Taglio al plasma</div>
+                <div class="contact-item">Taglio con fiamma ossiacetilenica</div>
+                <div class="contact-item">Conoscenza disegno tecnico navale</div>
+                <div class="contact-item">Comprensione disegno tecnico</div>
+                <div class="contact-item">Uso macchinari e attrezzature settore</div>
+                <div class="contact-item">Manualità e senso pratico</div>
+                <div class="contact-item">Tecniche di rimozione di cordoni</div>
+            </div>
+
+            <!-- LINGUE -->
+            <div class="section lingue">
+                <div class="section-title">Lingue</div>
+                <div class="language-item">
+                    <span class="language-name">Romeno</span>
+                    <span class="language-level">Madrelingua</span>
+                </div>
+                <div class="language-item">
+                    <span class="language-name">Italiano</span>
+                    <span class="language-level">Avanzato</span>
+                </div>
+                <div class="language-item">
+                    <span class="language-name">Tedesco</span>
+                    <span class="language-level">Avanzato</span>
+                </div>
+                <div class="language-item">
+                    <span class="language-name">Inglese</span>
+                    <span class="language-level">Base</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <h2>Profilo Professionale</h2>
+            <p class="profile-text">
+                Saldatore specializzato con oltre 7 anni di esperienza internazionale in cantieri navali e impianti gas.
+                Competenze complete in saldatura TIG, filo continuo, elettrodo, subacquea e taglio
+                plasma/ossiacetilenico.
+                Precisione, manualità e conoscenza approfondita di disegno tecnico navale.
+            </p>
+
+            <h2>Esperienza Lavorativa</h2>
+
+            <div class="experience-item">
+                <div class="date-badge">2017</div>
+                <div class="experience-meta">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Porto+Esbjerg%2C+Danimarca" target="_blank"
+                        class="location-link">Porto Esbjerg, Danimarca</a>
+                </div>
+                <div class="experience-description">Controlli saldature, manutenzione navi mercantili.</div>
+            </div>
+
+            <div class="experience-item">
+                <div class="date-badge">2017-2023</div>
+                <div class="experience-meta">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Rostock%2C+Germania" target="_blank"
+                        class="location-link">Rostock, Germania</a>
+                    - <a href="https://www.neptun-werft.de/" target="_blank" class="company-link">Neptun Werft</a>
+                </div>
+                <div class="experience-description">Saldatore, puntatura paratie metalliche, fissaggio tubazioni,
+                    preparazione e fissaggio macchinari.</div>
+            </div>
+
+            <div class="experience-item">
+                <div class="date-badge">2023</div>
+                <div class="experience-meta">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Porto+Sundsvall%2C+Svezia" target="_blank"
+                        class="location-link">Porto Sundsvall, Porto Harnosand, Svezia</a>
+                </div>
+                <div class="experience-description">Saldatura, fissaggio ganci, catene per carico navi mercantili
+                    adibite a trasporto pale eoliche.</div>
+            </div>
+
+            <div class="experience-item">
+                <div class="date-badge">2023-2024</div>
+                <div class="experience-meta">
+                    <a href="https://www.google.com/maps/search/?api=1&query=Verona%2C+Italia" target="_blank"
+                        class="location-link">Verona, Italia</a>
+                    - <a href="https://www.enogas.it/" target="_blank" class="company-link">Enogas</a>
+                </div>
+                <div class="experience-description">
+                    Saldatore TIG su impianti gas inerti. Costruzione impianti antincendio, montaggio e manutenzione
+                    impianti gas. Montaggio valvole di sicurezza.
+                </div>
+            </div>
+
+            <h2>Formazione</h2>
+
+            <div class="education-block">
+                <div class="education-title">
+                    <a href="https://www.meyerwerft.de/" target="_blank" class="institute-link">Corso Saldatore - Meyer
+                        Werft</a>
+                </div>
+                <div class="education-details">Subacqueo, elettrodo, filo continuo, TIG e SUB</div>
+            </div>
+
+            <div class="education-block">
+                <div class="education-title">
+                    <a href="https://www.istitutobenelli.it/" target="_blank" class="institute-link">Istituto Tecnico G.
+                        Benelli</a>
+                </div>
+                <div class="education-details">Indirizzo meccanico veicoli a motore</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("keydown", (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === "p") {
+                e.preventDefault();
+                window.print();
+            }
+        });
+
+        async function downloadPDF() {
+            const btn = document.querySelector('.download-btn');
+            const originalText = btn.textContent;
+            btn.textContent = '⏳ Generando PDF...';
+            btn.classList.add('loading');
+
+            try {
+                const container = document.querySelector('.container');
+
+                // Nascondi il bottone e attiva la modalità PDF
+                btn.style.display = 'none';
+                document.body.classList.add('pdf-mode');
+
+                // Aspetta per permettere al CSS di applicarsi completamente
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // Configurazione ottimizzata per alta qualità
+                const canvas = await html2canvas(container, {
+                    scale: 4,
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    imageTimeout: 0,
+                    removeContainer: false,
+                    foreignObjectRendering: false,
+                    width: container.offsetWidth,
+                    height: container.offsetHeight
+                });
+
+                // Ripristina lo stato normale
+                btn.style.display = 'block';
+                document.body.classList.remove('pdf-mode');
+
+                // Converti in immagine JPEG di alta qualità
+                const imgData = canvas.toDataURL('image/jpeg', 0.98);
+
+                // Crea PDF
+                const pdf = new window.jspdf.jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4',
+                    compress: true,
+                    precision: 16
+                });
+
+                const pdfWidth = 210;
+                const pdfHeight = 297;
+                const imgWidth = pdfWidth;
+                const imgHeight = (canvas.height * pdfWidth) / canvas.width;
+                const yOffset = imgHeight > pdfHeight ? 0 : (pdfHeight - imgHeight) / 2;
+
+                pdf.addImage(imgData, 'JPEG', 0, yOffset, imgWidth, imgHeight, undefined, 'FAST');
+                pdf.save('Curriculum_Vitae_Curca_Eduard.pdf');
+
+            } catch (error) {
+                console.error('Errore PDF:', error);
+                alert('Errore nella generazione del PDF. Prova Ctrl+P per stampare.');
+                document.body.classList.remove('pdf-mode');
+            } finally {
+                btn.textContent = originalText;
+                btn.classList.remove('loading');
+            }
+        }
+    </script>
+</body>
+
+</html>
